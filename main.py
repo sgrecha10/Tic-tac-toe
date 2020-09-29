@@ -12,13 +12,14 @@ HEIGHT = 400
 HUMAN = 'zero'
 BOT = 'cross'
 
+
 class Game:
     def __init__(self, root):
         self.field = Field(root)
         self.ai = Ai()
 
 
-class Field():
+class Field:
     def __init__(self, root):
         self.arrField = {}
         self.root = root
@@ -26,9 +27,9 @@ class Field():
         self.periodY = HEIGHT / SIZE
         self.c = Canvas(self.root, width=WIDTH, height=HEIGHT, bg='white')
         self.c.pack()
-        self.drawField()
+        self.draw_field()
 
-    def drawField(self):
+    def draw_field(self):
         self.root.title('Крестики - нолики')
         self.root.geometry(str(WIDTH) + str('x') + str(HEIGHT))
         for i in range(1, SIZE):
@@ -43,18 +44,18 @@ class Field():
                                          self.periodX * (k + 1) - 1,
                                          self.periodY * (i + 1) - 1,
                                          fill='white', outline='white')
-                self.c.tag_bind(wid, "<Button-1>", lambda event, wid=wid, i=i, k=k: self.markCell(wid, i, k, 'human'))
+                self.c.tag_bind(wid, "<Button-1>", lambda event, wid=wid, i=i, k=k: self.mark_cell(wid, i, k, 'human'))
                 tmp.append((i,k))
         self.arrField = dict.fromkeys(tmp)
 
-    def markCell(self, wid, i, k, player):
+    def mark_cell(self, wid, i, k, player):
         # self.c.delete(wid)
         if player == 'human':
             form = HUMAN
         else:
             form = BOT
         # Записываем в массив поля
-        self.arrField[i,k] = player
+        self.arrField[i, k] = player
         if form == 'zero':
             self.c.create_oval(self.periodX * k + 10,
                           self.periodY * i + 10,
@@ -76,7 +77,7 @@ class Field():
         if player == 'human':
             a.ai.step(i, k)
 
-    def drawLine(self, *args):
+    def draw_line(self, *args):
         start, finish = args[0], args[1]
         x1, y1 = self.periodX * start[1] + 1, self.periodY * start[0] + 1
         x2, y2 = self.periodX * (start[1] + 1) - 1, self.periodY * (start[0] + 1) - 1
@@ -89,76 +90,15 @@ class Field():
 
 class Ai:
     def step(self, i, k):
-        #print(a.field.arrField, i, k)
-
         # находим случайное значение поля для хода, проверяем что бы было свободно
         i, k = random.choice([key for key in a.field.arrField if a.field.arrField[key] == None])
-
         # перечеркиваем выигравшие клеточки
-        a.field.drawLine((0,1), (2,1))
-
+        a.field.draw_line((0,1), (2,1))
         # ai ходит
-        a.field.markCell(0, i, k, 'bot')
-
-
+        a.field.mark_cell(0, i, k, 'bot')
 
 
 if __name__ == '__main__':
     root = Tk()
     a = Game(root)
     root.mainloop()
-
-
-    """window = Tk()
-
-    # рисуем поле
-    window.title('Крестики - нолики')
-    window.geometry(str(WIDTH) + str('x') + str(HEIGHT))
-
-    c = Canvas(window, width=WIDTH, height=HEIGHT, bg='white')
-    c.pack()
-
-    periodX = WIDTH/SIZE
-    periodY = HEIGHT/SIZE
-
-    for i in range(1, SIZE):
-        c.create_line(periodX*i, 10, periodX*i, HEIGHT-10, fill='gray')
-
-    for i in range(1, SIZE):
-        c.create_line(10, periodY*i, WIDTH-10, periodY*i, fill='gray')
-
-    def clickCell(wid, i, k):
-        c.delete(wid)
-
-        c.create_oval(periodX * k + 10,
-                      periodY * i + 10,
-                      periodX * (k + 1) - 10,
-                      periodY * (i + 1) - 10,
-                      fill='white', outline='black', width=3)
-
-        c.create_line(periodX * k + 10,
-                      periodY * i + 10,
-                      periodX * (k + 1) - 10,
-                      periodY * (i + 1) - 10,
-                      fill='black', width=3)
-
-        c.create_line(periodX * (k+1) - 10,
-                      periodY * i + 10,
-                      periodX * k + 10,
-                      periodY * (i + 1) - 10,
-                      fill='black', width=3)
-        
-
-    for i in range(SIZE):
-        for k in range(SIZE):
-            wid = c.create_rectangle(periodX*k + 1,
-                               periodY*i + 1,
-                               periodX*(k+1) - 1,
-                               periodY*(i+1) - 1,
-                               fill='white', outline='white')
-            c.tag_bind(wid, "<Button-1>", lambda event, wid=wid, i=i, k=k: clickCell(wid, i, k))
-
-
-
-    window.mainloop()
-    """
